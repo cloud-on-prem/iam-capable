@@ -20,3 +20,7 @@ difference = "2.0"
 url = "2.2"
 colored = "2.0"
 cli-table = "0.4"
+
+[dev-dependencies]
+mockito = "0.10"
+tokio = { version = "1", features = ["full"] }
