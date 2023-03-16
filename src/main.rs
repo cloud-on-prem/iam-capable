@@ -39,5 +39,5 @@ async fn main() {
         .await
         .unwrap();
 
-    compare::compare_and_display_json(policy1, policy2)
+    compare::compare_policies(&policy1, &policy2, &args.role1, &args.role2);
 }

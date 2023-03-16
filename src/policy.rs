@@ -6,7 +6,7 @@ pub async fn fetch_role_policy(
     iam: &IamClient,
     account_id: &str,
     role_name: &str,
-) -> Result<Value, Box<dyn std::error::Error + Send + Sync>> {
+) -> Result<Vec<Value>, Box<dyn std::error::Error + Send + Sync>> {
     let attached_policies = iam
         .list_attached_role_policies()
         .role_name(role_name)
@@ -53,7 +53,7 @@ pub async fn fetch_role_policy(
         policies.push(json_document);
     }
 
-    Ok(Value::Array(policies))
+    Ok(policies)
 }
 
 async fn fetch_policy_document(
