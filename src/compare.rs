@@ -19,12 +19,7 @@ pub struct CapabilityRow {
 }
 
 /// Compares two sets of policies and outputs a table displaying their differences.
-pub fn compare_policies(
-    policies1: &[Value],
-    policies2: &[Value],
-    role1: &str,
-    role2: &str,
-) -> Vec<CapabilityRow> {
+pub fn compare_policies(policies1: &[Value], policies2: &[Value]) -> Vec<CapabilityRow> {
     let mut capabilities1 = HashMap::<Capability, bool>::new();
     let mut capabilities2 = HashMap::<Capability, bool>::new();
 

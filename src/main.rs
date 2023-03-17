@@ -1,14 +1,13 @@
-use aws_config::meta::region::RegionProviderChain;
-use aws_sdk_iam::Client as IamClient;
-use aws_sdk_sts::Client as StsClient;
 use compare::CapabilityRow;
 use std::io::stdout;
 use structopt::StructOpt;
 
+mod aws;
 mod compare;
 mod output;
 mod policy;
 
+use aws::get_aws_client;
 use output::csv::write_csv;
 use output::format::OutputFormat;
 use output::json::write_json;
@@ -23,34 +22,20 @@ struct Cli {
     output_format: OutputFormat,
 }
 
-async fn fetch_account_id(
-    sts: &StsClient,
-) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
-    let account_id = sts.get_caller_identity().send().await?.account.unwrap();
-    Ok(account_id)
-}
-
 #[tokio::main]
 async fn main() {
     let args = Cli::from_args();
+    let aws_client = get_aws_client().await.unwrap();
 
-    let region_provider = RegionProviderChain::default_provider().or_else("us-east-1");
-
-    let config = aws_config::from_env().region(region_provider).load().await;
-    let iam = IamClient::new(&config);
-    let sts = StsClient::new(&config);
-    let account_id = fetch_account_id(&sts).await.unwrap();
-
-    let policy1 = policy::fetch_role_policy(&iam, &account_id, &args.role1)
+    let policy1 = policy::fetch_role_policy(&aws_client.iam, &aws_client.account_id, &args.role1)
         .await
         .unwrap();
 
-    let policy2 = policy::fetch_role_policy(&iam, &account_id, &args.role2)
+    let policy2 = policy::fetch_role_policy(&aws_client.iam, &aws_client.account_id, &args.role2)
         .await
         .unwrap();
 
-    let rows: Vec<CapabilityRow> =
-        compare::compare_policies(&policy1, &policy2, &args.role1, &args.role2);
+    let rows: Vec<CapabilityRow> = compare::compare_policies(&policy1, &policy2);
 
     match args.output_format {
         OutputFormat::Csv => {
