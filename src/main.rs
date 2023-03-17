@@ -1,10 +1,15 @@
 use aws_config::meta::region::RegionProviderChain;
 use aws_sdk_iam::Client as IamClient;
 use aws_sdk_sts::Client as StsClient;
+use compare::CapabilityRow;
+use std::io::stdout;
 use structopt::StructOpt;
 
 mod compare;
+mod output;
 mod policy;
+
+use output::csv::write_csv;
 
 #[derive(StructOpt)]
 struct Cli {
@@ -39,5 +44,11 @@ async fn main() {
         .await
         .unwrap();
 
-    compare::compare_policies(&policy1, &policy2, &args.role1, &args.role2);
+    let rows: Vec<CapabilityRow> =
+        compare::compare_policies(&policy1, &policy2, &args.role1, &args.role2);
+
+    // Output as CSV
+    if let Err(e) = write_csv(&rows, stdout()) {
+        eprintln!("Error writing CSV: {}", e);
+    }
 }

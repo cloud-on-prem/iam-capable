@@ -1,4 +1,3 @@
-use cli_table::{format::Justify, print_stdout, Table, WithTitle};
 use serde_json::Value;
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -12,20 +11,20 @@ struct Capability {
 }
 
 /// Represents a row in the comparison table.
-#[derive(Table)]
-struct CapabilityRow {
-    #[table(title = "Resource", justify = "Justify::Left")]
-    resource: String,
-    #[table(title = "Action", justify = "Justify::Left")]
-    action: String,
-    #[table(title = "Role 1", justify = "Justify::Center")]
-    has_capability1: String,
-    #[table(title = "Role 2", justify = "Justify::Center")]
-    has_capability2: String,
+pub struct CapabilityRow {
+    pub resource: String,
+    pub action: String,
+    pub has_capability1: String,
+    pub has_capability2: String,
 }
 
 /// Compares two sets of policies and outputs a table displaying their differences.
-pub fn compare_policies(policies1: &[Value], policies2: &[Value], role1: &str, role2: &str) {
+pub fn compare_policies(
+    policies1: &[Value],
+    policies2: &[Value],
+    role1: &str,
+    role2: &str,
+) -> Vec<CapabilityRow> {
     let mut capabilities1 = HashMap::<Capability, bool>::new();
     let mut capabilities2 = HashMap::<Capability, bool>::new();
 
@@ -74,7 +73,7 @@ pub fn compare_policies(policies1: &[Value], policies2: &[Value], role1: &str, r
         })
         .collect();
 
-    display_table(capability_rows);
+    capability_rows
 }
 
 /// Extracts the capabilities from the policy statements.
@@ -106,10 +105,4 @@ fn extract_capabilities(statements: &[Value]) -> HashMap<Capability, bool> {
         }
     }
     capabilities
-}
-
-/// Displays the comparison table for two sets of policies.
-fn display_table(capability_rows: Vec<CapabilityRow>) {
-    let table = capability_rows.with_title();
-    print_stdout(table).unwrap();
 }
