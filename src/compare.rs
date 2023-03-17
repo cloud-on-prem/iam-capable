@@ -14,8 +14,8 @@ struct Capability {
 pub struct CapabilityRow {
     pub resource: String,
     pub action: String,
-    pub has_capability1: String,
-    pub has_capability2: String,
+    pub has_capability1: bool,
+    pub has_capability2: bool,
 }
 
 /// Compares two sets of policies and outputs a table displaying their differences.
@@ -64,8 +64,8 @@ pub fn compare_policies(
                 Some(CapabilityRow {
                     resource: key.resource.clone(),
                     action: key.action.clone(),
-                    has_capability1: has_capability1.to_string(),
-                    has_capability2: has_capability2.to_string(),
+                    has_capability1: has_capability1.clone(),
+                    has_capability2: has_capability2.clone(),
                 })
             } else {
                 None

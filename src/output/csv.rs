@@ -13,8 +13,8 @@ pub fn write_csv<W: Write>(rows: &[CapabilityRow], writer: W) -> Result<(), csv:
         csv_writer.write_record(&[
             &row.resource,
             &row.action,
-            &row.has_capability1,
-            &row.has_capability2,
+            &row.has_capability1.to_string(),
+            &row.has_capability2.to_string(),
         ])?;
     }
 
