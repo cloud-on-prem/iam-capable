@@ -1,3 +1,4 @@
+use crate::aws::iam::Policy;
 use aws_sdk_iam::Client as IamClient;
 use serde_json::Value;
 use url::form_urlencoded;
@@ -12,12 +13,12 @@ use url::form_urlencoded;
 ///
 /// # Returns
 ///
-/// A Result containing a Vec of Value representing the policy statements, or an Error.
+/// A Result containing a Vec of Policy, or an Error.
 pub async fn fetch_role_policy(
     iam: &IamClient,
     account_id: &str,
     role_name: &str,
-) -> Result<Vec<Value>, Box<dyn std::error::Error + Send + Sync>> {
+) -> Result<Vec<Policy>, Box<dyn std::error::Error + Send + Sync>> {
     let attached_policy_arns = fetch_attached_policy_arns(iam, role_name).await?;
     let inline_policy_arns = fetch_inline_policy_arns(iam, account_id, role_name).await?;
 
@@ -25,7 +26,7 @@ pub async fn fetch_role_policy(
         .into_iter()
         .chain(inline_policy_arns.into_iter());
 
-    let mut policies = Vec::<Value>::new();
+    let mut policies = Vec::<Policy>::new();
 
     for policy_arn in policy_arns {
         let json_document = fetch_json_policy_document(iam, &policy_arn).await?;
@@ -80,16 +81,17 @@ async fn fetch_inline_policy_arns(
 async fn fetch_json_policy_document(
     iam: &IamClient,
     policy_arn: &str,
-) -> Result<Value, Box<dyn std::error::Error + Send + Sync>> {
+) -> Result<Policy, Box<dyn std::error::Error + Send + Sync>> {
     let document = fetch_policy_document(iam, policy_arn).await?;
 
     let decoded_document: String = form_urlencoded::parse(document.as_bytes())
         .map(|(key, _)| key)
         .collect();
 
-    let json_document: Value = serde_json::from_str(&decoded_document).unwrap();
+    let json_document: Value = serde_json::from_str(&decoded_document)?;
+    let policy: Policy = serde_json::from_value(json_document)?;
 
-    Ok(json_document)
+    Ok(policy)
 }
 
 /// Fetches the policy document for a given policy ARN, focusing on the default policy version.

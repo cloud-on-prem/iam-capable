@@ -35,7 +35,7 @@ async fn main() {
         .await
         .unwrap();
 
-    let rows: Vec<CapabilityRow> = compare::compare_policies(&policy1, &policy2);
+    let rows: Vec<CapabilityRow> = compare::compare_policies(policy1, policy2);
 
     match args.output_format {
         OutputFormat::Csv => {

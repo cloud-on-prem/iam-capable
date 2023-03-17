@@ -1,7 +1,9 @@
-use serde_json::Value;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::iter::FromIterator;
+
+use crate::aws::iam::Policy;
+use crate::aws::iam::PolicyStatement;
 
 /// Represents an AWS capability, consisting of a resource and an action.
 #[derive(Hash, PartialEq, Eq, Debug)]
@@ -19,20 +21,18 @@ pub struct CapabilityRow {
 }
 
 /// Compares two sets of policies and outputs a table displaying their differences.
-pub fn compare_policies(policies1: &[Value], policies2: &[Value]) -> Vec<CapabilityRow> {
+pub fn compare_policies(policies1: Vec<Policy>, policies2: Vec<Policy>) -> Vec<CapabilityRow> {
     let mut capabilities1 = HashMap::<Capability, bool>::new();
     let mut capabilities2 = HashMap::<Capability, bool>::new();
 
     for policy1 in policies1 {
-        let v1 = &vec![];
-        let statements1 = policy1["Statement"].as_array().unwrap_or(v1);
+        let statements1 = policy1.statement;
         let policy_capabilities1 = extract_capabilities(statements1);
         capabilities1.extend(policy_capabilities1);
     }
 
     for policy2 in policies2 {
-        let v2 = &vec![];
-        let statements2 = policy2["Statement"].as_array().unwrap_or(v2);
+        let statements2 = policy2.statement;
         let policy_capabilities2 = extract_capabilities(statements2);
         capabilities2.extend(policy_capabilities2);
     }
@@ -72,23 +72,13 @@ pub fn compare_policies(policies1: &[Value], policies2: &[Value]) -> Vec<Capabil
 }
 
 /// Extracts the capabilities from the policy statements.
-fn extract_capabilities(statements: &[Value]) -> HashMap<Capability, bool> {
+fn extract_capabilities(statements: Vec<PolicyStatement>) -> HashMap<Capability, bool> {
     let mut capabilities: HashMap<Capability, bool> = HashMap::new();
 
     for stmt in statements {
-        let actions = stmt["Action"]
-            .as_array()
-            .unwrap_or(&vec![])
-            .iter()
-            .filter_map(|v| v.as_str().map(String::from))
-            .collect::<Vec<_>>();
+        let actions = stmt.action;
 
-        let resources = stmt["Resource"]
-            .as_array()
-            .unwrap_or(&vec![])
-            .iter()
-            .filter_map(|v| v.as_str().map(String::from))
-            .collect::<Vec<_>>();
+        let resources = stmt.resource;
         for action in &actions {
             for resource in &resources {
                 let capability = Capability {
