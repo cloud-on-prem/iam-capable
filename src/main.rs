@@ -7,7 +7,7 @@ mod compare;
 mod output;
 mod policy;
 
-use aws::get_aws_client;
+use aws::client::get_aws_client;
 use output::csv::write_csv;
 use output::format::OutputFormat;
 use output::json::write_json;
