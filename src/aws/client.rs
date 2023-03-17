@@ -24,6 +24,9 @@ pub async fn get_aws_client() -> Result<AwsClient, Box<dyn Error + Send + Sync>>
 async fn fetch_account_id(
     sts: &StsClient,
 ) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
-    let account_id = sts.get_caller_identity().send().await?.account.unwrap();
+    let account_id =
+        sts.get_caller_identity().send().await?.account.ok_or(
+            "Could not fetch account ID. Please check your AWS credentials and try again.",
+        )?;
     Ok(account_id)
 }

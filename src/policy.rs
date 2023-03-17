@@ -122,7 +122,12 @@ async fn fetch_policy_document(
 
     match default_policy_version {
         Some(version) => {
-            let policy_version_id = version.version_id.as_ref().unwrap();
+            let policy_version_id = version.version_id.as_ref().ok_or_else(|| {
+                Box::new(std::io::Error::new(
+                    std::io::ErrorKind::Other,
+                    "Failed to get policy version ID",
+                ))
+            })?;
             let policy_version_output = iam
                 .get_policy_version()
                 .policy_arn(policy_arn)
