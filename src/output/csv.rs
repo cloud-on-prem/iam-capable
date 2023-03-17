@@ -1,6 +1,5 @@
 use crate::compare::CapabilityRow;
 use csv::Writer;
-use std::io::Cursor;
 use std::io::Write;
 
 pub fn write_csv<W: Write>(rows: &[CapabilityRow], writer: W) -> Result<(), csv::Error> {
@@ -24,61 +23,67 @@ pub fn write_csv<W: Write>(rows: &[CapabilityRow], writer: W) -> Result<(), csv:
     Ok(())
 }
 
-#[test]
-fn test_write_csv_empty_rows() {
-    let rows: Vec<CapabilityRow> = Vec::new();
-    let mut writer = Cursor::new(Vec::new());
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::io::Cursor;
 
-    assert!(write_csv(&rows, &mut writer).is_ok());
+    #[test]
+    fn test_write_csv_empty_rows() {
+        let rows: Vec<CapabilityRow> = Vec::new();
+        let mut writer = Cursor::new(Vec::new());
 
-    let content = String::from_utf8(writer.into_inner()).unwrap();
-    assert_eq!(content, "Resource,Action,Role1,Role2\n");
-}
+        assert!(write_csv(&rows, &mut writer).is_ok());
 
-// Test case: single row
-#[test]
-fn test_write_csv_single_row() {
-    let rows = vec![CapabilityRow {
-        resource: String::from("Resource1"),
-        action: String::from("Action1"),
-        has_capability1: true,
-        has_capability2: false,
-    }];
-    let mut writer = Cursor::new(Vec::new());
+        let content = String::from_utf8(writer.into_inner()).unwrap();
+        assert_eq!(content, "Resource,Action,Role1,Role2\n");
+    }
 
-    assert!(write_csv(&rows, &mut writer).is_ok());
-
-    let content = String::from_utf8(writer.into_inner()).unwrap();
-    assert_eq!(
-        content,
-        "Resource,Action,Role1,Role2\nResource1,Action1,true,false\n"
-    );
-}
-
-// Test case: multiple rows
-#[test]
-fn test_write_csv_multiple_rows() {
-    let rows = vec![
-        CapabilityRow {
+    // Test case: single row
+    #[test]
+    fn test_write_csv_single_row() {
+        let rows = vec![CapabilityRow {
             resource: String::from("Resource1"),
             action: String::from("Action1"),
             has_capability1: true,
             has_capability2: false,
-        },
-        CapabilityRow {
-            resource: String::from("Resource2"),
-            action: String::from("Action2"),
-            has_capability1: false,
-            has_capability2: true,
-        },
-    ];
-    let mut writer = Cursor::new(Vec::new());
+        }];
+        let mut writer = Cursor::new(Vec::new());
 
-    assert!(write_csv(&rows, &mut writer).is_ok());
+        assert!(write_csv(&rows, &mut writer).is_ok());
 
-    let content = String::from_utf8(writer.into_inner()).unwrap();
-    assert_eq!(
+        let content = String::from_utf8(writer.into_inner()).unwrap();
+        assert_eq!(
+            content,
+            "Resource,Action,Role1,Role2\nResource1,Action1,true,false\n"
+        );
+    }
+
+    // Test case: multiple rows
+    #[test]
+    fn test_write_csv_multiple_rows() {
+        let rows = vec![
+            CapabilityRow {
+                resource: String::from("Resource1"),
+                action: String::from("Action1"),
+                has_capability1: true,
+                has_capability2: false,
+            },
+            CapabilityRow {
+                resource: String::from("Resource2"),
+                action: String::from("Action2"),
+                has_capability1: false,
+                has_capability2: true,
+            },
+        ];
+        let mut writer = Cursor::new(Vec::new());
+
+        assert!(write_csv(&rows, &mut writer).is_ok());
+
+        let content = String::from_utf8(writer.into_inner()).unwrap();
+        assert_eq!(
         content,
         "Resource,Action,Role1,Role2\nResource1,Action1,true,false\nResource2,Action2,false,true\n"
     );
+    }
 }
