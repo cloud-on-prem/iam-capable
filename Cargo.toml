@@ -1,5 +1,5 @@
 [package]
-name = "aws-iam-role-diff"
+name = "iam-capable"
 version = "0.1.0"
 edition = "2021"
 
@@ -11,15 +11,9 @@ aws-sdk-iam = "0.24.0"
 aws-sdk-sts = "0.24.0"
 aws-types = "0.54.1"
 tokio = { version = "1", features = ["full"] }
-base64 = "0.21.0"
 structopt = "0.3"
 serde = "1.0"
 serde_json = "1.0"
 serde_derive = "1.0"
-difference = "2.0"
 url = "2.2"
 csv = "1.1"
-
-[dev-dependencies]
-mockito = "0.10"
-tokio = { version = "1", features = ["full"] }
