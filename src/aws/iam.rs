@@ -2,7 +2,7 @@ use serde_derive::{Deserialize, Serialize};
 use serde_json::Value;
 use serde::Deserialize as SerdeDeserialize;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Policy {
     #[serde(rename = "Version")]
     pub version: String,
@@ -10,7 +10,7 @@ pub struct Policy {
     pub statements: Vec<PolicyStatement>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct PolicyStatement {
     #[serde(rename = "Effect")]
     pub effect: String,

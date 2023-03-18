@@ -1,21 +1,16 @@
-use crate::compare::CapabilityRow;
 use csv::Writer;
 use std::io::Write;
+use super::format::OutputSerializable;
 
-pub fn write_csv<W: Write>(rows: &[CapabilityRow], writer: W) -> Result<(), csv::Error> {
+pub fn write_csv<T: OutputSerializable, W: Write>(rows: &[T], writer: W) -> Result<(), csv::Error> {
     let mut csv_writer = Writer::from_writer(writer);
 
     // Write the header
-    csv_writer.write_record(&["Resource", "Action", "Role1", "Role2"])?;
+    csv_writer.write_record(T::csv_header())?;
 
     // Write rows
     for row in rows {
-        csv_writer.write_record(&[
-            &row.resource,
-            &row.action,
-            &row.has_capability1.to_string(),
-            &row.has_capability2.to_string(),
-        ])?;
+        csv_writer.write_record(&row.csv_record())?;
     }
 
     csv_writer.flush()?;
@@ -23,10 +18,12 @@ pub fn write_csv<W: Write>(rows: &[CapabilityRow], writer: W) -> Result<(), csv:
     Ok(())
 }
 
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use std::io::Cursor;
+    use super::super::super::capability::CapabilityRow;
 
     #[test]
     fn test_write_csv_empty_rows() {
