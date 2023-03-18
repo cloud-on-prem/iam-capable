@@ -3,22 +3,9 @@ use std::collections::HashSet;
 use std::iter::FromIterator;
 
 use crate::aws::iam::Policy;
-use crate::aws::iam::PolicyStatement;
+use crate::capability::{CapabilityRow, Capability, extract_capabilities};
 
 /// Represents an AWS capability, consisting of a resource and an action.
-#[derive(Hash, PartialEq, Eq, Debug)]
-struct Capability {
-    resource: String,
-    action: String,
-}
-
-/// Represents a row in the comparison table.
-pub struct CapabilityRow {
-    pub resource: String,
-    pub action: String,
-    pub has_capability1: bool,
-    pub has_capability2: bool,
-}
 
 /// Compares two sets of policies and outputs a table displaying their differences.
 pub fn compare_policies(policies1: Vec<Policy>, policies2: Vec<Policy>) -> Vec<CapabilityRow> {
@@ -71,30 +58,11 @@ pub fn compare_policies(policies1: Vec<Policy>, policies2: Vec<Policy>) -> Vec<C
     capability_rows
 }
 
-/// Extracts the capabilities from the policy statements.
-fn extract_capabilities(statements: Vec<PolicyStatement>) -> HashMap<Capability, bool> {
-    let mut capabilities: HashMap<Capability, bool> = HashMap::new();
-
-    for stmt in statements {
-        let actions = stmt.action;
-
-        let resources = stmt.resource;
-        for action in &actions {
-            for resource in &resources {
-                let capability = Capability {
-                    resource: resource.clone(),
-                    action: action.clone(),
-                };
-                capabilities.insert(capability, true);
-            }
-        }
-    }
-    capabilities
-}
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::aws::iam::PolicyStatement;
 
     fn make_policy_statement(actions: Vec<&str>, resources: Vec<&str>) -> PolicyStatement {
         PolicyStatement {

@@ -1,22 +1,12 @@
-use crate::compare::CapabilityRow;
+use crate::capability::CapabilityRow;
 use serde_json::json;
 use std::io::Write;
 
-pub fn write_json<W: Write>(rows: &[CapabilityRow], writer: W) -> Result<(), serde_json::Error> {
-    let json_rows = rows
-        .iter()
-        .map(|row| {
-            json!({
-                "resource": row.resource,
-                "action": row.action,
-                "role1": row.has_capability1,
-                "role2": row.has_capability2
-            })
-        })
-        .collect::<Vec<_>>();
+use super::format::OutputSerializable;
 
+pub fn write_json<T: OutputSerializable, W: Write>(rows: &[T], writer: W) -> Result<(), serde_json::Error> {
+    let json_rows: Vec<serde_json::Value> = rows.iter().map(T::to_json_value).collect();
     serde_json::to_writer(writer, &json_rows)?;
-
     Ok(())
 }
 
