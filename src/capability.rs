@@ -120,7 +120,7 @@ mod tests {
             ],
         }];
 
-        let expected_capabilities = vec![
+        let mut expected_capabilities = vec![
             CapabilityRow {
                 resource: "arn:aws:s3:::my-bucket".to_string(),
                 action: "s3:ListBucket".to_string(),
@@ -135,7 +135,13 @@ mod tests {
             },
         ];
 
-        let capabilities = extract_capabilities_from_policies(policies);
+        let mut capabilities = extract_capabilities_from_policies(policies);
+
+        // Sort both vectors by resource and action
+        capabilities.sort_by(|a, b| (a.resource.cmp(&b.resource)).then(a.action.cmp(&b.action)));
+        expected_capabilities
+            .sort_by(|a, b| (a.resource.cmp(&b.resource)).then(a.action.cmp(&b.action)));
+
         assert_eq!(capabilities, expected_capabilities);
     }
 }

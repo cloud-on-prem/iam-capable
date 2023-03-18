@@ -48,8 +48,8 @@ pub fn compare_policies(
                 Some(CapabilityComparisonRow {
                     resource: key.resource.clone(),
                     action: key.action.clone(),
-                    has_capability1: has_capability1.clone(),
-                    has_capability2: has_capability2.clone(),
+                    has_capability1: *has_capability1,
+                    has_capability2: *has_capability2,
                 })
             } else {
                 None
