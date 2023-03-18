@@ -1,6 +1,6 @@
+use serde::Deserialize as SerdeDeserialize;
 use serde_derive::{Deserialize, Serialize};
 use serde_json::Value;
-use serde::Deserialize as SerdeDeserialize;
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Policy {
@@ -13,8 +13,8 @@ pub struct Policy {
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub enum Effect {
     Allow,
-    Deny
-} 
+    Deny,
+}
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct PolicyStatement {
@@ -39,6 +39,8 @@ where
             .into_iter()
             .filter_map(|v| v.as_str().map(String::from))
             .collect()),
-        _ => Err(serde::de::Error::custom("expected string or array of strings")),
+        _ => Err(serde::de::Error::custom(
+            "expected string or array of strings",
+        )),
     }
 }

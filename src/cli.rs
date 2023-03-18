@@ -1,8 +1,11 @@
-use structopt::StructOpt;
 use crate::output::format::OutputFormat;
+use structopt::StructOpt;
 
 #[derive(StructOpt)]
-#[structopt(name = "IAM Capable", about = "A tool to compare and fetch IAM Role capabilities")]
+#[structopt(
+    name = "IAM Capable",
+    about = "A tool to compare and fetch IAM Role capabilities"
+)]
 pub enum IamCapable {
     #[structopt(name = "compare", about = "Compares two IAM Roles")]
     Compare {

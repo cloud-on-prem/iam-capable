@@ -1,8 +1,7 @@
 use serde_json::json;
 
-use crate::{output::format::OutputSerializable, aws::iam::Policy};
 use crate::aws::iam::PolicyStatement;
-
+use crate::{aws::iam::Policy, output::format::OutputSerializable};
 
 #[derive(Hash, PartialEq, Eq, Debug)]
 pub struct CapabilityRow {
@@ -28,7 +27,7 @@ impl OutputSerializable for CapabilityRow {
 }
 
 /// Represents a row in the comparison table.
-#[derive (Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct CapabilityComparisonRow {
     pub resource: String,
     pub action: String,
@@ -59,7 +58,6 @@ impl OutputSerializable for CapabilityComparisonRow {
         })
     }
 }
-
 
 pub fn extract_capabilities_from_policies(policies: Vec<Policy>) -> Vec<CapabilityRow> {
     let mut capabilities: Vec<CapabilityRow> = Vec::new();
@@ -102,27 +100,25 @@ fn extract_capabilities_from_statement(statements: Vec<PolicyStatement>) -> Vec<
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::aws::iam::{Policy, PolicyStatement, Effect};
+    use crate::aws::iam::{Effect, Policy, PolicyStatement};
 
     #[test]
     fn test_extract_capabilities_from_policies() {
-        let policies = vec![
-            Policy {
-                version: "2012-10-17".to_string(),
-                statements: vec![
-                    PolicyStatement {
-                        effect: Effect::Allow,
-                        action: vec!["s3:ListBucket".to_string(), "s3:GetObject".to_string()],
-                        resource: vec!["arn:aws:s3:::my-bucket".to_string()],
-                    },
-                    PolicyStatement {
-                        effect: Effect::Allow,
-                        action: vec!["s3:GetObject".to_string()],
-                        resource: vec!["arn:aws:s3:::my-bucket/*".to_string()],
-                    },
-                ],
-            },
-        ];
+        let policies = vec![Policy {
+            version: "2012-10-17".to_string(),
+            statements: vec![
+                PolicyStatement {
+                    effect: Effect::Allow,
+                    action: vec!["s3:ListBucket".to_string(), "s3:GetObject".to_string()],
+                    resource: vec!["arn:aws:s3:::my-bucket".to_string()],
+                },
+                PolicyStatement {
+                    effect: Effect::Allow,
+                    action: vec!["s3:GetObject".to_string()],
+                    resource: vec!["arn:aws:s3:::my-bucket/*".to_string()],
+                },
+            ],
+        }];
 
         let expected_capabilities = vec![
             CapabilityRow {

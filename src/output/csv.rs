@@ -1,6 +1,6 @@
+use super::format::OutputSerializable;
 use csv::Writer;
 use std::io::Write;
-use super::format::OutputSerializable;
 
 pub fn write_csv<T: OutputSerializable, W: Write>(rows: &[T], writer: W) -> Result<(), csv::Error> {
     let mut csv_writer = Writer::from_writer(writer);
@@ -18,12 +18,11 @@ pub fn write_csv<T: OutputSerializable, W: Write>(rows: &[T], writer: W) -> Resu
     Ok(())
 }
 
-
 #[cfg(test)]
 mod tests {
+    use super::super::super::capability::CapabilityComparisonRow;
     use super::*;
     use std::io::Cursor;
-    use super::super::super::capability::CapabilityComparisonRow;
 
     #[test]
     fn test_write_csv_empty_rows() {

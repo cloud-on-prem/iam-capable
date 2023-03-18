@@ -3,7 +3,10 @@ use std::io::Write;
 
 use super::format::OutputSerializable;
 
-pub fn write_json<T: OutputSerializable, W: Write>(rows: &[T], writer: W) -> Result<(), serde_json::Error> {
+pub fn write_json<T: OutputSerializable, W: Write>(
+    rows: &[T],
+    writer: W,
+) -> Result<(), serde_json::Error> {
     let json_rows: Vec<serde_json::Value> = rows.iter().map(T::to_json_value).collect();
     serde_json::to_writer(writer, &json_rows)?;
     Ok(())

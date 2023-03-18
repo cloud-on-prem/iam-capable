@@ -1,7 +1,7 @@
-use std::str::FromStr;
 use std::io::Write;
+use std::str::FromStr;
 
-use super::csv::{write_csv};
+use super::csv::write_csv;
 use super::json::write_json;
 
 #[derive(Debug, PartialEq)]
@@ -15,7 +15,6 @@ pub trait OutputSerializable {
     fn csv_record(&self) -> Vec<String>;
     fn to_json_value(&self) -> serde_json::Value;
 }
-
 
 impl FromStr for OutputFormat {
     type Err = String;
@@ -50,11 +49,10 @@ pub fn print<T: OutputSerializable, W: Write>(
     }
 }
 
-
 #[cfg(test)]
 mod tests {
+    use super::{print, OutputFormat, OutputSerializable};
     use std::io::Cursor;
-    use super::{OutputSerializable, print, OutputFormat};
 
     // Dummy struct for testing purposes
     #[derive(Debug, PartialEq)]
@@ -125,5 +123,4 @@ mod tests {
 
         assert_eq!(parsed_json, expected_json);
     }
-
 }
