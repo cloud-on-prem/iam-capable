@@ -12,7 +12,7 @@ pub fn write_json<T: OutputSerializable, W: Write>(rows: &[T], writer: W) -> Res
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::capability::CapabilityRow;
+    use crate::capability::CapabilityComparisonRow;
     #[derive(serde::Deserialize)]
     struct JsonCapabilityRow {
         resource: String,
@@ -24,13 +24,13 @@ mod tests {
     #[test]
     fn test_write_json() -> Result<(), Box<dyn std::error::Error>> {
         let rows = vec![
-            CapabilityRow {
+            CapabilityComparisonRow {
                 resource: "arn:aws:s3:::mybucket".to_string(),
                 action: "s3:ListBucket".to_string(),
                 has_capability1: true,
                 has_capability2: false,
             },
-            CapabilityRow {
+            CapabilityComparisonRow {
                 resource: "arn:aws:s3:::mybucket/*".to_string(),
                 action: "s3:GetObject".to_string(),
                 has_capability1: false,

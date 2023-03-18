@@ -3,30 +3,29 @@ use std::collections::HashSet;
 use std::iter::FromIterator;
 
 use crate::aws::iam::Policy;
-use crate::capability::{CapabilityRow, Capability, extract_capabilities};
+use crate::capability::extract_capabilities_from_policies;
+use crate::capability::{CapabilityComparisonRow, CapabilityRow};
 
 /// Represents an AWS capability, consisting of a resource and an action.
 
 /// Compares two sets of policies and outputs a table displaying their differences.
-pub fn compare_policies(policies1: Vec<Policy>, policies2: Vec<Policy>) -> Vec<CapabilityRow> {
-    let mut capabilities1 = HashMap::<Capability, bool>::new();
-    let mut capabilities2 = HashMap::<Capability, bool>::new();
+pub fn compare_policies(policies1: Vec<Policy>, policies2: Vec<Policy>) -> Vec<CapabilityComparisonRow> {
+    let mut capabilities1 = HashMap::<CapabilityRow, bool>::new();
+    let mut capabilities2 = HashMap::<CapabilityRow, bool>::new();
 
-    for policy1 in policies1 {
-        let statements1 = policy1.statements;
-        let policy_capabilities1 = extract_capabilities(statements1);
-        capabilities1.extend(policy_capabilities1);
+    let caps_from_policies1 = extract_capabilities_from_policies(policies1);
+    for cap in caps_from_policies1 {
+        capabilities1.insert(cap, true);
     }
 
-    for policy2 in policies2 {
-        let statements2 = policy2.statements;
-        let policy_capabilities2 = extract_capabilities(statements2);
-        capabilities2.extend(policy_capabilities2);
+    let caps_from_policies2 = extract_capabilities_from_policies(policies2);
+    for cap in caps_from_policies2 {
+        capabilities2.insert(cap, true);
     }
 
-    let all_keys_set: HashSet<&Capability> =
+    let all_keys_set: HashSet<&CapabilityRow> =
         HashSet::from_iter(capabilities1.keys().chain(capabilities2.keys()));
-    let mut all_keys: Vec<&Capability> = all_keys_set.into_iter().collect();
+    let mut all_keys: Vec<&CapabilityRow> = all_keys_set.into_iter().collect();
     all_keys.sort_by(|a, b| {
         let res = a.resource.cmp(&b.resource);
         if res == std::cmp::Ordering::Equal {
@@ -36,14 +35,14 @@ pub fn compare_policies(policies1: Vec<Policy>, policies2: Vec<Policy>) -> Vec<C
         }
     });
 
-    let capability_rows: Vec<CapabilityRow> = all_keys
+    let capability_rows: Vec<CapabilityComparisonRow> = all_keys
         .into_iter()
         .filter_map(|key| {
             let has_capability1 = capabilities1.get(key).unwrap_or(&false);
             let has_capability2 = capabilities2.get(key).unwrap_or(&false);
 
             if !(*has_capability1 && *has_capability2) {
-                Some(CapabilityRow {
+                Some(CapabilityComparisonRow {
                     resource: key.resource.clone(),
                     action: key.action.clone(),
                     has_capability1: has_capability1.clone(),
@@ -62,40 +61,14 @@ pub fn compare_policies(policies1: Vec<Policy>, policies2: Vec<Policy>) -> Vec<C
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::aws::iam::PolicyStatement;
+    use crate::aws::iam::{PolicyStatement, Effect};
 
     fn make_policy_statement(actions: Vec<&str>, resources: Vec<&str>) -> PolicyStatement {
         PolicyStatement {
             action: actions.into_iter().map(String::from).collect(),
             resource: resources.into_iter().map(String::from).collect(),
-            effect: "Allow".to_string(),
+            effect: Effect::Allow,
         }
-    }
-
-    #[test]
-    fn test_extract_capabilities() {
-        let statements = vec![
-            make_policy_statement(vec!["s3:ListBucket"], vec!["arn:aws:s3:::mybucket"]),
-            make_policy_statement(vec!["s3:GetObject"], vec!["arn:aws:s3:::mybucket/*"]),
-        ];
-
-        let capabilities = extract_capabilities(statements);
-
-        assert_eq!(capabilities.len(), 2);
-        assert_eq!(
-            capabilities[&Capability {
-                resource: "arn:aws:s3:::mybucket".to_string(),
-                action: "s3:ListBucket".to_string(),
-            }],
-            true
-        );
-        assert_eq!(
-            capabilities[&Capability {
-                resource: "arn:aws:s3:::mybucket/*".to_string(),
-                action: "s3:GetObject".to_string(),
-            }],
-            true
-        );
     }
 
     fn make_policy(statements: Vec<PolicyStatement>) -> Policy {
