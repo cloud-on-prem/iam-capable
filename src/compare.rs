@@ -26,13 +26,13 @@ pub fn compare_policies(policies1: Vec<Policy>, policies2: Vec<Policy>) -> Vec<C
     let mut capabilities2 = HashMap::<Capability, bool>::new();
 
     for policy1 in policies1 {
-        let statements1 = policy1.statement;
+        let statements1 = policy1.statements;
         let policy_capabilities1 = extract_capabilities(statements1);
         capabilities1.extend(policy_capabilities1);
     }
 
     for policy2 in policies2 {
-        let statements2 = policy2.statement;
+        let statements2 = policy2.statements;
         let policy_capabilities2 = extract_capabilities(statements2);
         capabilities2.extend(policy_capabilities2);
     }
@@ -132,7 +132,7 @@ mod tests {
 
     fn make_policy(statements: Vec<PolicyStatement>) -> Policy {
         Policy {
-            statement: statements,
+            statements,
             version: "2012-10-17".to_string(),
         }
     }
