@@ -23,11 +23,11 @@ pub fn write_csv<T: OutputSerializable, W: Write>(rows: &[T], writer: W) -> Resu
 mod tests {
     use super::*;
     use std::io::Cursor;
-    use super::super::super::capability::CapabilityRow;
+    use super::super::super::capability::CapabilityComparisonRow;
 
     #[test]
     fn test_write_csv_empty_rows() {
-        let rows: Vec<CapabilityRow> = Vec::new();
+        let rows: Vec<CapabilityComparisonRow> = Vec::new();
         let mut writer = Cursor::new(Vec::new());
 
         assert!(write_csv(&rows, &mut writer).is_ok());
@@ -39,7 +39,7 @@ mod tests {
     // Test case: single row
     #[test]
     fn test_write_csv_single_row() {
-        let rows = vec![CapabilityRow {
+        let rows = vec![CapabilityComparisonRow {
             resource: String::from("Resource1"),
             action: String::from("Action1"),
             has_capability1: true,
@@ -60,13 +60,13 @@ mod tests {
     #[test]
     fn test_write_csv_multiple_rows() {
         let rows = vec![
-            CapabilityRow {
+            CapabilityComparisonRow {
                 resource: String::from("Resource1"),
                 action: String::from("Action1"),
                 has_capability1: true,
                 has_capability2: false,
             },
-            CapabilityRow {
+            CapabilityComparisonRow {
                 resource: String::from("Resource2"),
                 action: String::from("Action2"),
                 has_capability1: false,

@@ -11,9 +11,15 @@ pub struct Policy {
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
+pub enum Effect {
+    Allow,
+    Deny
+} 
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct PolicyStatement {
     #[serde(rename = "Effect")]
-    pub effect: String,
+    pub effect: Effect,
     #[serde(rename = "Action")]
     #[serde(deserialize_with = "deserialize_string_or_array")]
     pub action: Vec<String>,
