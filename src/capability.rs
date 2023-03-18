@@ -76,6 +76,7 @@ pub fn extract_capabilities_from_policies(policy: Vec<Policy>) -> Vec<Capability
             }
         }
     }
+    capabilities.sort_by(|a, b| a.resource.cmp(&b.resource));
     capabilities
 }
 
