@@ -1,5 +1,4 @@
-use crate::capability::CapabilityRow;
-use serde_json::json;
+use serde_json;
 use std::io::Write;
 
 use super::format::OutputSerializable;
@@ -13,7 +12,7 @@ pub fn write_json<T: OutputSerializable, W: Write>(rows: &[T], writer: W) -> Res
 #[cfg(test)]
 mod tests {
     use super::*;
-
+    use crate::capability::CapabilityRow;
     #[derive(serde::Deserialize)]
     struct JsonCapabilityRow {
         resource: String,
