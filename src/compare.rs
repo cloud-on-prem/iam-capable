@@ -9,7 +9,10 @@ use crate::capability::{CapabilityComparisonRow, CapabilityRow};
 /// Represents an AWS capability, consisting of a resource and an action.
 
 /// Compares two sets of policies and outputs a table displaying their differences.
-pub fn compare_policies(policies1: Vec<Policy>, policies2: Vec<Policy>) -> Vec<CapabilityComparisonRow> {
+pub fn compare_policies(
+    policies1: Vec<Policy>,
+    policies2: Vec<Policy>,
+) -> Vec<CapabilityComparisonRow> {
     let mut capabilities1 = HashMap::<CapabilityRow, bool>::new();
     let mut capabilities2 = HashMap::<CapabilityRow, bool>::new();
 
@@ -45,8 +48,8 @@ pub fn compare_policies(policies1: Vec<Policy>, policies2: Vec<Policy>) -> Vec<C
                 Some(CapabilityComparisonRow {
                     resource: key.resource.clone(),
                     action: key.action.clone(),
-                    has_capability1: has_capability1.clone(),
-                    has_capability2: has_capability2.clone(),
+                    has_capability1: *has_capability1,
+                    has_capability2: *has_capability2,
                 })
             } else {
                 None
@@ -57,11 +60,10 @@ pub fn compare_policies(policies1: Vec<Policy>, policies2: Vec<Policy>) -> Vec<C
     capability_rows
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::aws::iam::{PolicyStatement, Effect};
+    use crate::aws::iam::{Effect, PolicyStatement};
 
     fn make_policy_statement(actions: Vec<&str>, resources: Vec<&str>) -> PolicyStatement {
         PolicyStatement {

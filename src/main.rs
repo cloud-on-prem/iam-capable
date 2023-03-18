@@ -1,14 +1,13 @@
-use capability::{CapabilityComparisonRow, extract_capabilities_from_policies};
 use aws::client::get_aws_client;
-use std::io::stdout;
 use aws::policy::fetch_role_policy;
+use capability::{extract_capabilities_from_policies, CapabilityComparisonRow};
+use std::io::stdout;
 
 mod aws;
+mod capability;
+mod cli;
 mod compare;
 mod output;
-mod cli;
-mod capability;
-
 
 #[tokio::main]
 async fn main() {
@@ -32,9 +31,14 @@ async fn main() {
 
             output::format::print(output_format, &rows, &mut writer)
         }
-        cli::IamCapable::Fetch { role, output_format } => {
+        cli::IamCapable::Fetch {
+            role,
+            output_format,
+        } => {
             // Fetch the policies for the single role
-            let policies = fetch_role_policy(&aws_client.iam, &aws_client.account_id, &role).await.unwrap();
+            let policies = fetch_role_policy(&aws_client.iam, &aws_client.account_id, &role)
+                .await
+                .unwrap();
 
             let rows = extract_capabilities_from_policies(policies);
             output::format::print(output_format, &rows, &mut writer);

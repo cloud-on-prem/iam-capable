@@ -137,9 +137,8 @@ async fn fetch_policy_document(
 
             let document = policy_version_output
                 .policy_version
-                .map(|pv| pv.document)
-                .flatten()
-                .ok_or_else(|| "Failed to get policy document")?;
+                .and_then(|pv| pv.document)
+                .ok_or("Failed to get policy document")?;
 
             Ok(document)
         }
