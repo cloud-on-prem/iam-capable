@@ -14,7 +14,7 @@ This tool retrieves the policies attached to one or multiple AWS IAM roles and d
 
 ## Usage
 
-0. Download the binary for your OS from the [releases](/releases) page.
+0. Download the binary for your OS from the [releases](/releases) page (MacOs and MacOs-x86, other users will need to build it from source).
 
 1. Ensure the shell is configured to use AWS Credentials. Follow the [instructions here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) to set it up.
 
@@ -58,11 +58,8 @@ $ iam-capable fetch --role myrole1 --output_format json | jq .
   }
 ]
 ```
-## Dependencies
 
-- [Rust](https://www.rust-lang.org/)
-
-## Installation
+## Development (or for building from source)
 
 1. Install [Rust](https://www.rust-lang.org/tools/install).
 2. Clone this repository: `git clone https://github.com/yourusername/iam-capable.git`
