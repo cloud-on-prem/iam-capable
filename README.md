@@ -14,7 +14,7 @@ This tool retrieves the policies attached to one or multiple AWS IAM roles and d
 
 ## Usage
 
-0. Download the binary for your OS from the [releases](/releases) page (MacOs and MacOs-x86, other users will need to build it from source).
+0. Download the binary for your OS from the [releases](https://github.com/cloud-on-prem/iam-capable/releases) page (MacOs and MacOs-x86, other users will need to build it from source).
 
 1. Ensure the shell is configured to use AWS Credentials. Follow the [instructions here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) to set it up.
 
