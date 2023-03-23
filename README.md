@@ -9,7 +9,7 @@ This tool retrieves the policies attached to one or multiple AWS IAM roles and d
 ## Features
 
 - Fetches policies associated with IAM roles
-- Compares policies to generate a table of differences
+- Compares policies to generate a table of differences (Returns a "symmetric difference" between the two roles. `role1 Δ role2` i.e, is the set of capabilities that are in either `role1` or `role2`, but not in both)
 - Outputs comparison or fetched results in CSV or JSON format
 
 ## Usage
