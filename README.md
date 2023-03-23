@@ -14,7 +14,7 @@ This tool retrieves the policies attached to one or multiple AWS IAM roles and d
 
 ## Usage
 
-0. Download the binary for your OS from the [releases](https://github.com/cloud-on-prem/iam-capable/releases) page (MacOs and MacOs-x86, other users will need to build it from source).
+0. Download the binary for your OS from the [releases](https://github.com/cloud-on-prem/iam-capable/releases) page.
 
 1. Ensure the shell is configured to use AWS Credentials. Follow the [instructions here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) to set it up.
 
@@ -34,6 +34,10 @@ This tool retrieves the policies attached to one or multiple AWS IAM roles and d
       # - ROLE_NAME2: The name of the second IAM role to compare capabilities for.
       # - OUTPUT_FORMAT (optional): The output format for the fetched results. Available formats: CSV (default), JSON.
     ```
+
+## Limitations
+
+Currently, the tool does a "basic" comparison of policy statements. For example, it does not look at policy boundaries or conditions on statements.
 
 ## Sample Outputs (when piped to [csvkit](https://csvkit.readthedocs.io/en/latest/) or [jq](https://github.com/stedolan/jq))
 
