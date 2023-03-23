@@ -1,5 +1,7 @@
 # IAM Capable 💪
 
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/cloud-on-prem/iam-capable/test.yml?style=for-the-badge) &nbsp;  ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/cloud-on-prem/iam-capable?include_prereleases&style=for-the-badge) &nbsp; ![GitHub](https://img.shields.io/github/license/cloud-on-prem/iam-capable?style=for-the-badge)
+
 A command-line tool for fetching and comparing the permissions and capabilities of IAM Roles. (Currently, only AWS IAM is supported)
 
 ## Description
