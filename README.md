@@ -18,22 +18,22 @@ This tool retrieves the policies attached to one or multiple AWS IAM roles and d
 
 1. Ensure the shell is configured to use AWS Credentials. Follow the [instructions here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) to set it up.
 
-2. Fetch the capabilities of a single IAM role:
-
-  ```sh
-    iam-capable fetch --role ROLE_NAME [--output-format OUTPUT_FORMAT]
-    # - ROLE_NAME: The name of the IAM role to fetch capabilities for.
-    # - OUTPUT_FORMAT (optional): The output format for the fetched results. Available formats: CSV (default), JSON.
-  ```
+2. Fetch the capabilities of a single IAM role:  
+  
+    ```sh
+      iam-capable fetch --role ROLE_NAME [--output-format OUTPUT_FORMAT]
+      # - ROLE_NAME: The name of the IAM role to fetch capabilities for.
+      # - OUTPUT_FORMAT (optional): The output format for the fetched results. Available formats: CSV (default), JSON.
+    ```  
 
 3. Compare the capabilities of two IAM roles:
 
-  ```sh
-    iam-capable compare --role1 ROLE_NAME1 --role2 ROLE_NAME2 [--output-format OUTPUT_FORMAT]
-    # - ROLE_NAME1: The name of the first IAM role to compare capabilities for.
-    # - ROLE_NAME2: The name of the second IAM role to compare capabilities for.
-    # - OUTPUT_FORMAT (optional): The output format for the fetched results. Available formats: CSV (default), JSON.
-  ```
+    ```sh
+      iam-capable compare --role1 ROLE_NAME1 --role2 ROLE_NAME2 [--output-format OUTPUT_FORMAT]
+      # - ROLE_NAME1: The name of the first IAM role to compare capabilities for.
+      # - ROLE_NAME2: The name of the second IAM role to compare capabilities for.
+      # - OUTPUT_FORMAT (optional): The output format for the fetched results. Available formats: CSV (default), JSON.
+    ```
 
 ## Sample Outputs (when piped to [csvkit](https://csvkit.readthedocs.io/en/latest/) or [jq](https://github.com/stedolan/jq))
 
@@ -66,7 +66,6 @@ $ iam-capable fetch --role myrole1 --output_format json | jq .
 3. Change to the repository directory: `cd iam-capable.`
 4. Build the project: `cargo build --release`
 5. The binary will be available at `./target/release/iam-capable`
-
 
 ---
 
