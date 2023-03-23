@@ -733,7 +733,7 @@ dependencies = [
 
 [[package]]
 name = "iam-capable"
-version = "0.1.5"
+version = "0.1.0"
 dependencies = [
  "aws-config",
  "aws-sdk-iam",
